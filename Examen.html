@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GRAFICACION MULTIMEDIA</title>
+    <style>
+      body {
+        margin: 0px;
+      }
+    </style>
+  </head>
+  <body>
+    <label for="parts">Division: </label>
+    <input type="number" id="parts" name="parts" />
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/p5.min.js"
+      integrity="sha512-3RlxD1bW34eFKPwj9gUXEWtdSMC59QqIqHnD8O/NoTwSJhgxRizdcFVQhUMFyTp5RwLTDL0Lbcqtl8b7bFAzog=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script>
+      function setup() {
+        createCanvas(windowWidth, windowHeight);
+      }
+
+      function draw() {
+        background(220);
+        const partes = parseInt(document.getElementById("parts").value);
+        circuloMd(120, 300, 100);
+        circuloMd(380, 300, 100);
+        circuloMd(620, 300, 100);
+        divisionPP(120, 300, 100, partes);
+        divisionDDA(380, 300, 100, partes);
+        divisionBhm(620, 300, 100, partes);
+      }
+
+      function circuloMd(xc, yc, r) {
+        let x = 0;
+        let y = r;
+        let p = 1 - r;
+
+       
+        point(xc + x, yc + y);
+        point(xc + x, yc - y);
+        point(xc - x, yc + y);
+        point(xc - x, yc - y);
+
+       
+        while (x < y) {
+          x++;
+          if (p < 0) {
+            p += 2 * x + 1;
+          } else {
+            y--;
+            p += 2 * (x - y) + 1;
+          }
+          point(xc + x, yc + y);
+          point(xc + x, yc - y);
+          point(xc - x, yc + y);
+          point(xc - x, yc - y);
+          point(xc + y, yc + x);
+          point(xc + y, yc - x);
+          point(xc - y, yc + x);
+          point(xc - y, yc - x);
+        }
+      }
+
+      function divisionPP(x, y, radio, partes) {
+        const angulo = TWO_PI / partes;
+        const puntoMedio = floor(partes / 2);
+        stroke(0);
+
+        for (let i = 0; i < partes; i++) {
+          const ang = angulo * i;
+          const px = x + cos(ang) * radio;
+          const py = y + sin(ang) * radio;
+          if (i === puntoMedio) {
+            strokeWeight(2);
+            ecuacionPP(x, y, px, py);
+          }
+          strokeWeight(2);
+          ecuacionPP(x, y, px, py);
+        }
+      }
+
+      function divisionDDA(x, y, radio, partes) {
+        const angulo = TWO_PI / partes;
+        const puntoMedio = floor(partes / 2);
+
+        strokeWeight(2);
+
+        for (let i = 0; i < partes; i++) {
+          const ang = angulo * i;
+          const px = x + cos(ang) * radio;
+          const py = y + sin(ang) * radio;
+          if (i === puntoMedio) {
+            strokeWeight(2);
+            ddaLine(x, y, px, py);
+          }
+          strokeWeight(2);
+          ddaLine(x, y, px, py);
+        }
+      }
+
+      function divisionBhm(x, y, radio, partes) {
+        const angulo = TWO_PI / partes;
+        const puntoMedio = floor(partes / 2);
+
+        strokeWeight(2);
+
+        for (let i = 0; i < partes; i++) {
+          const ang = angulo * i;
+          const px = x + cos(ang) * radio;
+          const py = y + sin(ang) * radio;
+          if (i === puntoMedio) {
+            strokeWeight(2);
+            bresenhamLine(x, y, px, py);
+          }
+          strokeWeight(2);
+          bresenhamLine(x, y, px, py);
+        }
+      }
+
+      function ecuacionPP(x1, y1, x2, y2) {
+        let m = (y2 - y1) / (x2 - x1);
+        let b = y1 - m * x1;
+        let xInicial = min(x1, x2);
+        let xFinal = max(x1, x2);
+
+        for (let x = xInicial; x <= xFinal; x++) {
+          let y = m * x + b;
+          point(x, y);
+        }
+      }
+
+      function ddaLine(x1, y1, x2, y2) {
+        let dx = x2 - x1;
+        let dy = y2 - y1;
+        let steps = max(abs(dx), abs(dy));
+        let xInc = dx / steps;
+        let yInc = dy / steps;
+        let x = x1;
+        let y = y1;
+
+        for (let i = 0; i <= steps; i++) {
+          point(x, y);
+          x += xInc;
+          y += yInc;
+        }
+      }
+
+      function bresenhamLine(x1, y1, x2, y2) {
+        let dx = abs(x2 - x1);
+        let dy = abs(y2 - y1);
+        let xInc = x1 < x2 ? 1 : -1;
+        let yInc = y1 < y2 ? 1 : -1;
+        let error = dx - dy;
+        let x = x1;
+        let y = y1;
+
+        for (let i = 0; i <= max(dx, dy); i++) {
+          point(x, y);
+          let error2 = 2 * error;
+
+          if (error2 > -dy) {
+            error -= dy;
+            x += xInc;
+          }
+
+          if (error2 < dx) {
+            error += dx;
+            y += yInc;
+          }
+        }
+      }
+    </script>
+  </body>
+</html>
